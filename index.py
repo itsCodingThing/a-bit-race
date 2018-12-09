@@ -1,10 +1,8 @@
 import pygame as pg
 import time
-import utils
 import random
 
 # 6th videos is running
-utils.foo()
 
 # game initialization
 pg.init()
