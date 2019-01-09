@@ -14,6 +14,8 @@ black = (0,0,0)
 white = (255, 255, 255)
 red = (255, 0, 0)
 
+block_color = (53, 115, 255)
+
 car_width = 73
 
 # setting game display
@@ -24,6 +26,11 @@ clock = pg.time.Clock()
 
 # loading car img
 carImg = pg.image.load('racecar.png')
+
+def things_dodged(count):
+    font = pg.font.SysFont(None, 25)
+    text = font.render(f"dodged: {str(count)}", True, black)
+    gameDisplay.blit(text, (0,0))
 
 # things
 def things(thingx, thingy, thingw, thingh, color):
@@ -63,6 +70,7 @@ def game_loop():
     thing_width = 100
     thing_height = 100
 
+    dodged = 0
 # main game loop start 
     while not gameExit:
         # checking event occur
@@ -87,9 +95,10 @@ def game_loop():
         gameDisplay.fill(white)
 
         # things(thingx, thingy, thingw, thingh, color)
-        things(thing_startx, thing_starty, thing_width, thing_height, black)
+        things(thing_startx, thing_starty, thing_width, thing_height, block_color)
         thing_starty += thing_speed
         car(x,y)
+        things_dodged(dodged)
 
         # car crash logic
         if x > display_width - car_width or x < 0:
@@ -99,7 +108,12 @@ def game_loop():
         if thing_starty > display_width:
             thing_starty = 0 - thing_height
             thing_startx = random.randrange(0, display_width)
+            dodged += 1
 
+        # collosion of thing 
+        if y < thing_starty + thing_height:
+            if x > thing_startx and x < thing_startx + thing_width or x + car_width > thing_startx and x + car_width < thing_startx + thing_width:
+                crash()
 
         pg.display.update()
         clock.tick(60)
