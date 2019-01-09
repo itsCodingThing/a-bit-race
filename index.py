@@ -12,7 +12,11 @@ display_width = 800
 
 black = (0,0,0)
 white = (255, 255, 255)
-red = (255, 0, 0)
+red = (200, 0, 0)
+green = (0, 200, 0)
+
+bright_red = (255, 0, 0)
+bright_green = (0, 255, 0)
 
 block_color = (53, 115, 255)
 
@@ -26,6 +30,26 @@ clock = pg.time.Clock()
 
 # loading car img
 carImg = pg.image.load('racecar.png')
+
+def game_intro():
+    intro = True
+
+    while intro:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                quit()
+        gameDisplay.fill(white)
+        largeText = pg.font.Font('freesansbold.ttf', 115)
+        textSurf, textRect = text_object("a bit racey", largeText)
+        textRect.center = ((display_width/2), (display_height/2))
+        gameDisplay.blit(textSurf, textRect)
+
+        button("GO!", 150, 450, 100, 50, green, bright_green, game_loop)
+        button("QUIT!", 550, 450, 100, 50, red, bright_red, "quit")
+
+        pg.display.update()
+        clock.tick(15)
 
 def things_dodged(count):
     font = pg.font.SysFont(None, 25)
@@ -55,6 +79,32 @@ def message_display(text):
 
 def crash():
     message_display('You Crashed')
+
+def button(msg, x, y, w, h, iColor, aColor, action=None):
+    mouse = pg.mouse.get_pos()
+    click = pg.mouse.get_pressed()
+
+    if x + w > mouse[0] > x and y + h > mouse[1] > y:
+        pg.draw.rect(gameDisplay, aColor, (x, y, w, h))
+        if click[0] == 1 and action != None:
+            action()
+            # if action == "play":
+            #     game_loop()
+            # elif action == "quit":
+            #     pg.quit()
+            #     quit()
+    else:
+        pg.draw.rect(gameDisplay, iColor, (x, y, w, h))
+
+    smallText = pg.font.Font('freesansbold.ttf', 20)
+    textSurf, textRect = text_object(msg, smallText)
+    textRect.center = ((x+(w/2)), y+(h/2))
+    gameDisplay.blit(textSurf, textRect)
+
+
+def gameQuit():
+    pg.quit()
+    quit()
 
 
 # main game loop
@@ -118,5 +168,6 @@ def game_loop():
         pg.display.update()
         clock.tick(60)
 
+game_intro()
 game_loop()
 pg.quit()
